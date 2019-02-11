@@ -1,6 +1,11 @@
 package viber
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"net/http"
+	"strconv"
+	"strings"
+)
 
 /*
 {
@@ -39,10 +44,6 @@ type TextMessage struct {
 	TrackingData  string      `json:"tracking_data,omitempty"`
 	Text          string      `json:"text"`
 	Keyboars      *Keyboard   `json:"keyboard,omitempty"`
-	//    "media": "http://www.images.com/img.jpg",
-	//    "thumbnail": "http://www.images.com/thumb.jpg"
-	// 	"size": 10000,
-	// 	"duration": 10
 }
 
 // URLMessage structure
@@ -65,6 +66,17 @@ type VideoMessage struct {
 	Thumbnail string `json:"thumbnail,omitempty"`
 	Size      uint   `json:"size"`
 	Duration  uint   `json:"duration,omitempty"`
+}
+
+// FileMessage structure
+type FileMessage struct {
+	TextMessage
+	Text      string `json:"text,omitempty"`
+	Media     string `json:"media"`
+	Thumbnail string `json:"thumbnail,omitempty"`
+	Size      uint   `json:"size,omitempty"`
+	Duration  uint   `json:"duration,omitempty"`
+	FileName  string `json:"file_name,omitempty"`
 }
 
 // MessageType for viber messaging
@@ -138,6 +150,45 @@ func (v *Viber) NewPictureMessage(msg string, url string, thumbURL string) *Pict
 		Media:     url,
 		Thumbnail: thumbURL,
 	}
+}
+
+// NewFileMessage for viber
+// Required. Max size 1 MB.
+// Only JPEG format is supported.
+// Other image formats as well as animated GIFs can be sent as URL messages or file messages
+func (v *Viber) NewFileMessage(msg, url, thumbURL string) *FileMessage {
+	var message = FileMessage{
+		TextMessage: TextMessage{
+			Sender: v.Sender,
+			Type:   TypeTextMessage,
+			Text:   msg,
+		},
+		Media:     url,
+		Thumbnail: thumbURL,
+	}
+
+	r, err := http.Get(url)
+	if err == nil {
+		size, err := strconv.Atoi(r.Header.Get("Content-Length"))
+		if err != nil {
+			size = 0
+		}
+
+		switch r.Header.Get("Content-Type") {
+		case "image/jpeg", "image/pjpeg":
+			message.Type = TypePictureMessage
+		case "video/mp4", "video/h264":
+			message.Type = TypeVideoMessage
+			message.Size = uint(size)
+		default:
+			file := strings.Split(url, "/")
+			message.Type = TypeFileMessage
+			message.Text = ""
+			message.FileName = file[len(file)-1]
+			message.Size = uint(size)
+		}
+	}
+	return &message
 }
 
 // SendTextMessage to reciever, returns message token
