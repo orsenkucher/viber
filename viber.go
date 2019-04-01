@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+const ApiPoint = "https://chatapi.viber.com/pa"
+
 // Sender structure
 type Sender struct {
 	Name   string `json:"name"`

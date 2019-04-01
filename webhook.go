@@ -1,6 +1,9 @@
 package viber
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 //
 //https://chatapi.viber.com/pa/set_webhook
@@ -47,7 +50,7 @@ func (v *Viber) SetWebhook(url string, eventTypes []string) (WebhookResp, error)
 		URL:        url,
 		EventTypes: eventTypes,
 	}
-	r, err := v.PostData("https://chatapi.viber.com/pa/set_webhook", req)
+	r, err := v.PostData(fmt.Sprintf("%s/set_webhook", ApiPoint), req)
 	if err != nil {
 		return resp, err
 	}
