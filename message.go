@@ -155,8 +155,8 @@ func (v *Viber) NewContactMessage(name string, phone string) (*ContactMessage, e
 	}, err
 }
 
-func (v *Viber) NewLocationMessage(lat float64, iot float64) (*LocationMessage, error) {
-	location, err := v.NewLocation(lat, iot)
+func (v *Viber) NewLocationMessage(lat float64, lon float64) (*LocationMessage, error) {
+	location, err := v.NewLocation(lat, lon)
 	return &LocationMessage{
 		TextMessage: TextMessage{
 			Sender: v.Sender,

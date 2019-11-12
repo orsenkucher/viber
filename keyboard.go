@@ -9,8 +9,8 @@ type Keyboard struct {
 }
 
 // AddButton to keyboard
-func (k *Keyboard) AddButton(b *Button) {
-	k.Buttons = append(k.Buttons, *b)
+func (k *Keyboard) AddButtons(b ...Button) {
+	k.Buttons = append(k.Buttons, b...)
 }
 
 // NewKeyboard struct with attribs init
