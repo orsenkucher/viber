@@ -9,6 +9,7 @@ Before using this package you will need [Viber public account](https://support.v
   * [Instalation](#instalation)
   * [Hello World example](#helloworld)
   * [Set Webhook](#webhook)
+  * [Remove Webhook](#remove-webhook) (kudos [@MiXaiLL76](https://github.com/MiXaiLL76))
   * [Send message to the user](#messaging)
   * [Carousel messages](#carousel)
   * [Send message to the Public Account](#pamessaging)
@@ -74,6 +75,13 @@ To be able to receive messages and notifications from Viber you have to specify 
 // All possible callbacks: "message", "subscribed",  "unsubscribed", "delivered", "seen", "failed", "conversation_started"
 v.SetWebhook("https://mysite.com/viber/webhook/", nil)
 ```
+
+### Remove webhook <a id="remove-webhook"></a>
+To remove webhook use:
+```go
+v.RemoveWebhook()
+```
+[Viber documentation "Removing your webhook"](https://developers.viber.com/docs/api/rest-bot-api/#removing-your-webhook).
 
 ## Messaging <a id="messaging"></a>
 
