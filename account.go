@@ -1,6 +1,9 @@
 package viber
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // Member of account details
 type Member struct {
@@ -36,7 +39,7 @@ type Account struct {
 // https://developers.viber.com/docs/api/rest-bot-api/#get-account-info
 func (v *Viber) AccountInfo() (Account, error) {
 	var a Account
-	b, err := v.PostData("https://chatapi.viber.com/pa/get_account_info", struct{}{})
+	b, err := v.PostData(fmt.Sprintf("%s/get_account_info", ViberAPI), struct{}{})
 	if err != nil {
 		return a, err
 	}

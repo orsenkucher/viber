@@ -1,25 +1,15 @@
 package viber
 
-import "encoding/json"
-
-//
-//https://chatapi.viber.com/pa/set_webhook
-// {
-//    "url": "https://my.host.com",
-//    "event_types": ["delivered", "seen", "failed", "subscribed", "unsubscribed", "conversation_started"]
-// }
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // WebhookReq request
 type WebhookReq struct {
 	URL        string   `json:"url"`
 	EventTypes []string `json:"event_types"`
 }
-
-// {
-//     "status": 0,
-//     "status_message": "ok",
-//     "event_types": ["delivered", "seen", "failed", "subscribed",  "unsubscribed", "conversation_started"]
-// }
 
 //WebhookResp response
 type WebhookResp struct {
@@ -47,7 +37,7 @@ func (v *Viber) SetWebhook(url string, eventTypes []string) (WebhookResp, error)
 		URL:        url,
 		EventTypes: eventTypes,
 	}
-	r, err := v.PostData("https://chatapi.viber.com/pa/set_webhook", req)
+	r, err := v.PostData(fmt.Sprintf("%s/set_webhook", ViberAPI), req)
 	if err != nil {
 		return resp, err
 	}
@@ -65,7 +55,7 @@ func (v *Viber) RemoveWebhook() (resp WebhookResp, err error) {
 	var req = WebhookReq{
 		URL: "",
 	}
-	r, err := v.PostData("https://chatapi.viber.com/pa/set_webhook", req)
+	r, err := v.PostData(fmt.Sprintf("%s/set_webhook", ViberAPI), req)
 	if err != nil {
 		return resp, err
 	}

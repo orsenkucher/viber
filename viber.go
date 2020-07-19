@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,6 +13,8 @@ import (
 	"strings"
 	"time"
 )
+
+const ViberAPI = "https://chatapi.viber.com/pa"
 
 // Sender structure
 type Sender struct {
@@ -81,11 +84,12 @@ func New(appKey, senderName, senderAvatar string) *Viber {
 func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
-	r.Body.Close()
 	if err != nil {
 		Log.Println(err)
 		return
 	}
+
+	closer(r.Body)
 
 	Log.Println("Received from Viber:", string(body))
 
@@ -221,12 +225,12 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // checkHMAC reports whether messageMAC is a valid HMAC tag for message.
 func (v *Viber) checkHMAC(message []byte, messageMAC string) bool {
-	hmac := hmac.New(sha256.New, []byte(v.AppKey))
-	if _, err := hmac.Write(message); err != nil {
+	h := hmac.New(sha256.New, []byte(v.AppKey))
+	if _, err := h.Write(message); err != nil {
 		return false
 	}
 
-	return messageMAC == hex.EncodeToString(hmac.Sum(nil))
+	return messageMAC == hex.EncodeToString(h.Sum(nil))
 }
 
 // peakMessageType uses regexp to determin message type for unmarshaling
@@ -245,4 +249,10 @@ func (v *Viber) SetRequestTimeout(t time.Duration) {
 		v.client = &http.Client{}
 	}
 	v.client.Timeout = t
+}
+
+func closer(c io.Closer) {
+	if err := c.Close(); err != nil {
+		Log.Println(err)
+	}
 }

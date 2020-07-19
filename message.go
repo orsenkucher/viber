@@ -2,6 +2,7 @@ package viber
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -230,13 +231,13 @@ func (v *Viber) SendPictureMessage(receiver string, msg string, url string, thum
 func (v *Viber) SendPublicMessage(from string, m Message) (msgToken uint64, err error) {
 	// text, picture, video, file, location, contact, sticker and url
 	m.SetFrom(from)
-	return v.sendMessage("https://chatapi.viber.com/pa/post", m)
+	return v.sendMessage(fmt.Sprintf("%s/post", ViberAPI), m)
 }
 
 // SendMessage to receiver
 func (v *Viber) SendMessage(to string, m Message) (msgToken uint64, err error) {
 	m.SetReceiver(to)
-	return v.sendMessage("https://chatapi.viber.com/pa/send_message", m)
+	return v.sendMessage(fmt.Sprintf("%s/send_message", ViberAPI), m)
 }
 
 // SetReceiver for text message

@@ -33,7 +33,7 @@ func (v *Viber) PostData(url string, i interface{}) ([]byte, error) {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
+	defer closer(resp.Body)
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err

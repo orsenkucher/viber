@@ -1,6 +1,9 @@
 package viber
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // User struct as part of UserDetails
 type User struct {
@@ -42,30 +45,6 @@ type UserOnline struct {
 
 // UserDetails of user id
 func (v *Viber) UserDetails(id string) (UserDetails, error) {
-	/*
-				b := []byte(`{
-				"status": 0,
-				"status_message": "ok",
-				"message_token": 4912661846655238145,
-				"user": {
-					"id": "01234567890A=",
-					"name": "John McClane",
-					"avatar": "http://avatar.example.com",
-					"country": "UK",
-					"language": "en",
-					"primary_device_os": "android 7.1",
-					"api_version": 1,
-					"viber_version": "6.5.0",
-					"mcc": 1,
-					"mnc": 1
-				}
-			}`)
-
-		var u UserDetails
-		err := json.Unmarshal(b, &u)
-		return u, err
-	*/
-
 	var u UserDetails
 	s := struct {
 		ID string `json:"id"`
@@ -73,7 +52,7 @@ func (v *Viber) UserDetails(id string) (UserDetails, error) {
 		ID: id,
 	}
 
-	b, err := v.PostData("https://chatapi.viber.com/pa/get_user_details", s)
+	b, err := v.PostData(fmt.Sprintf("%s/get_user_details", ViberAPI), s)
 	if err != nil {
 		return u, err
 	}
@@ -99,7 +78,7 @@ func (v *Viber) UserOnline(ids []string) ([]UserOnline, error) {
 	}{
 		IDs: ids,
 	}
-	b, err := v.PostData("https://chatapi.viber.com/pa/get_online", req)
+	b, err := v.PostData(fmt.Sprintf("%s/get_online", ViberAPI), req)
 	if err != nil {
 		return []UserOnline{}, err
 	}
