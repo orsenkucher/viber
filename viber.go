@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+const ViberAPI = "https://chatapi.viber.com/pa"
+
 // Sender structure
 type Sender struct {
 	Name   string `json:"name"`
