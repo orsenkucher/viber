@@ -126,8 +126,12 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if msg := v.ConversationStarted(v, u, e.Type, e.Context, e.Subscribed, e.MessageToken, e.Timestamp.Time); msg != nil {
 				msg.SetReceiver("")
 				msg.SetFrom("")
+
 				b, _ := json.Marshal(msg)
-				w.Write(b)
+				_, err := w.Write(b)
+				if err != nil {
+					Log.Println(err)
+				}
 			}
 		}
 
@@ -218,7 +222,10 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // checkHMAC reports whether messageMAC is a valid HMAC tag for message.
 func (v *Viber) checkHMAC(message []byte, messageMAC string) bool {
 	hmac := hmac.New(sha256.New, []byte(v.AppKey))
-	hmac.Write(message)
+	if _, err := hmac.Write(message); err != nil {
+		return false
+	}
+
 	return messageMAC == hex.EncodeToString(hmac.Sum(nil))
 }
 

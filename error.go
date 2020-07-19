@@ -14,9 +14,9 @@ func (e Error) Error() string {
 
 // ErrorStatus code of Viber error, returns -1 if e is not Viber error
 func ErrorStatus(e interface{}) int {
-	switch e.(type) {
+	switch err := e.(type) {
 	case Error:
-		return e.(Error).Status
+		return err.Status
 	}
 	return -1
 }
