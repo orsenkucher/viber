@@ -2,20 +2,6 @@ package viber
 
 import "encoding/json"
 
-/*
-{
-	"receiver": "01234567890A=",
-	"min_api_version": 1,
-	"sender": {
-		"name": "John McClane",
-		"avatar": "http://avatar.example.com"
-	},
-	"tracking_data": "tracking data",
-	"type": "text",
-	"text": "a message from pa"
-}
-*/
-
 type messageResponse struct {
 	Status        int    `json:"status"`
 	StatusMessage string `json:"status_message"`
@@ -38,7 +24,7 @@ type TextMessage struct {
 	Type          MessageType `json:"type"`
 	TrackingData  string      `json:"tracking_data,omitempty"`
 	Text          string      `json:"text"`
-	Keyboars      *Keyboard   `json:"keyboard,omitempty"`
+	Keyboard      *Keyboard   `json:"keyboard,omitempty"`
 	//    "media": "http://www.images.com/img.jpg",
 	//    "thumbnail": "http://www.images.com/thumb.jpg"
 	// 	"size": 10000,
@@ -49,6 +35,13 @@ type TextMessage struct {
 type URLMessage struct {
 	TextMessage
 	Media string `json:"media"`
+}
+
+// FileMessage structure
+type FileMessage struct {
+	URLMessage
+	Size     uint   `json:"size"`
+	FileName string `json:"file_name"`
 }
 
 // PictureMessage structure
@@ -65,6 +58,17 @@ type VideoMessage struct {
 	Thumbnail string `json:"thumbnail,omitempty"`
 	Size      uint   `json:"size"`
 	Duration  uint   `json:"duration,omitempty"`
+}
+
+// ContactMessage structure
+type ContactMessage struct {
+	TextMessage
+	Contact Contact `json:"contact"`
+}
+
+type LocationMessage struct {
+	TextMessage
+	Location Location `json:"location"`
 }
 
 // MessageType for viber messaging
@@ -140,6 +144,28 @@ func (v *Viber) NewPictureMessage(msg string, url string, thumbURL string) *Pict
 	}
 }
 
+func (v *Viber) NewContactMessage(name string, phone string) (*ContactMessage, error) {
+	contact, err := v.NewContact(name, phone)
+	return &ContactMessage{
+		TextMessage: TextMessage{
+			Sender: v.Sender,
+			Type:   TypeContactMessage,
+		},
+		Contact: contact,
+	}, err
+}
+
+func (v *Viber) NewLocationMessage(lat float64, lon float64) (*LocationMessage, error) {
+	location, err := v.NewLocation(lat, lon)
+	return &LocationMessage{
+		TextMessage: TextMessage{
+			Sender: v.Sender,
+			Type:   TypeLocationMessage,
+		},
+		Location: location,
+	}, err
+}
+
 // SendTextMessage to reciever, returns message token
 func (v *Viber) SendTextMessage(receiver string, msg string) (msgToken uint64, err error) {
 	return v.SendMessage(receiver, v.NewTextMessage(msg))
@@ -180,5 +206,5 @@ func (m *TextMessage) SetFrom(from string) {
 
 // SetKeyboard for text message
 func (m *TextMessage) SetKeyboard(k *Keyboard) {
-	m.Keyboars = k
+	m.Keyboard = k
 }
