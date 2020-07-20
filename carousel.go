@@ -5,12 +5,14 @@ type RichMediaMessage struct {
 	AuthToken     string      `json:"auth_token"`
 	Receiver      string      `json:"receiver,omitempty"`
 	Type          MessageType `json:"type"`
-	MinAPIVersion int         `json:"min_api_version"`
+	MinAPIVersion uint        `json:"min_api_version"`
 	RichMedia     RichMedia   `json:"rich_media"`
 	AltText       string      `json:"alt_text,omitempty"`
 	Keyboard      *Keyboard   `json:"keyboard,omitempty"`
 	TrackingData  string      `json:"tracking_data,omitempty"`
 }
+
+var _ Message = (*RichMediaMessage)(nil)
 
 // RichMedia for carousel
 type RichMedia struct {
@@ -54,3 +56,8 @@ func (rm *RichMediaMessage) SetReceiver(r string) {
 
 // SetFrom to satisfy interface although RichMedia messages can't be sent to publich chat and don't have From
 func (rm *RichMediaMessage) SetFrom(from string) {}
+
+// SetReceiver for RichMedia message
+func (rm *RichMediaMessage) SetMinAPI(ver uint) {
+	rm.MinAPIVersion = ver
+}

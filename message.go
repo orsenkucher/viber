@@ -19,7 +19,16 @@ type Message interface {
 	SetReceiver(r string)
 	SetFrom(from string)
 	SetKeyboard(k *Keyboard)
+	SetMinAPI(ver uint)
 }
+
+var _ Message = (*TextMessage)(nil)
+var _ Message = (*URLMessage)(nil)
+var _ Message = (*PictureMessage)(nil)
+var _ Message = (*VideoMessage)(nil)
+var _ Message = (*FileMessage)(nil)
+var _ Message = (*ContactMessage)(nil)
+var _ Message = (*LocationMessage)(nil)
 
 // TextMessage for Viber
 type TextMessage struct {
@@ -237,6 +246,7 @@ func (v *Viber) SendPublicMessage(from string, m Message) (msgToken uint64, err 
 // SendMessage to receiver
 func (v *Viber) SendMessage(to string, m Message) (msgToken uint64, err error) {
 	m.SetReceiver(to)
+	m.SetMinAPI(v.MinAPI)
 	return v.sendMessage(fmt.Sprintf("%s/send_message", ViberAPI), m)
 }
 
@@ -253,4 +263,9 @@ func (m *TextMessage) SetFrom(from string) {
 // SetKeyboard for text message
 func (m *TextMessage) SetKeyboard(k *Keyboard) {
 	m.Keyboard = k
+}
+
+// SetMinAPI for text message
+func (m *TextMessage) SetMinAPI(ver uint) {
+	m.MinAPIVersion = ver
 }

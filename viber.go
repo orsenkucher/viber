@@ -46,6 +46,7 @@ type event struct {
 type Viber struct {
 	AppKey string
 	Sender Sender
+	MinAPI uint
 
 	// event methods
 	ConversationStarted func(v *Viber, u User, conversationType, context string, subscribed bool, token uint64, t time.Time) Message
