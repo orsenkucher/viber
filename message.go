@@ -240,6 +240,7 @@ func (v *Viber) SendPictureMessage(receiver string, msg string, url string, thum
 func (v *Viber) SendPublicMessage(from string, m Message) (msgToken uint64, err error) {
 	// text, picture, video, file, location, contact, sticker and url
 	m.SetFrom(from)
+	m.SetMinAPI(v.MinAPI)
 	return v.sendMessage(fmt.Sprintf("%s/post", ViberAPI), m)
 }
 
