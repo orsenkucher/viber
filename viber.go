@@ -129,6 +129,7 @@ func (v *Viber) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			if msg := v.ConversationStarted(v, u, e.Type, e.Context, e.Subscribed, e.MessageToken, e.Timestamp.Time); msg != nil {
+				msg.SetMinAPI(v.MinAPI)
 				msg.SetReceiver("")
 				msg.SetFrom("")
 
