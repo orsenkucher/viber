@@ -6,7 +6,18 @@ type Keyboard struct {
 	DefaultHeight bool     `json:"DefaultHeight,omitempty"`
 	BgColor       string   `json:"BgColor,omitempty"`
 	Buttons       []Button `json:"Buttons"`
+
+	// api level 4
+	InputFieldState InputFieldState `json:"InputFieldState,omitempty"`
 }
+
+type InputFieldState string
+
+const (
+	RegularInputField   InputFieldState = "regular"
+	MinimizedInputField InputFieldState = "minimized"
+	HiddenInputField    InputFieldState = "hidden"
+)
 
 // AddButton to keyboard
 func (k *Keyboard) AddButtons(b ...Button) {
