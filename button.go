@@ -21,7 +21,7 @@ type Button struct {
 }
 
 // NewButton helper function for creating button with text and image
-func (v *Viber) NewButton(cols, rows int, typ ActionType, actionBody string, text, image string) *Button {
+func (v *Viber) NewButton(cols, rows int, typ ActionType, actionBody string, text, image string, silent bool) *Button {
 	return &Button{
 		Columns:    cols,
 		Rows:       rows,
@@ -29,28 +29,31 @@ func (v *Viber) NewButton(cols, rows int, typ ActionType, actionBody string, tex
 		ActionBody: actionBody,
 		Text:       text,
 		Image:      image,
+		Silent:     silent,
 	}
 }
 
 // NewImageButton helper function for creating image button struct with common params
-func (v *Viber) NewImageButton(cols, rows int, typ ActionType, actionBody string, image string) *Button {
+func (v *Viber) NewImageButton(cols, rows int, typ ActionType, actionBody string, image string, silent bool) *Button {
 	return &Button{
 		Columns:    cols,
 		Rows:       rows,
 		ActionType: typ,
 		ActionBody: actionBody,
 		Image:      image,
+		Silent:     silent,
 	}
 }
 
 // NewTextButton helper function for creating image button struct with common params
-func (v *Viber) NewTextButton(cols, rows int, t ActionType, actionBody, text string) *Button {
+func (v *Viber) NewTextButton(cols, rows int, t ActionType, actionBody, text string, silent bool) *Button {
 	return &Button{
 		Columns:    cols,
 		Rows:       rows,
 		ActionType: t,
 		ActionBody: actionBody,
 		Text:       text,
+		Silent:     silent,
 	}
 }
 
