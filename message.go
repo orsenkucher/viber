@@ -223,11 +223,7 @@ func (v *Viber) NewLocationMessage(lat float64, lon float64) (*LocationMessage, 
 
 // SendTextMessage to reciever, returns message token
 func (v *Viber) SendTextMessage(receiver string, msg string) (msgToken uint64, err error) {
-	keyboard := v.NewKeyboard("", false)
-	keyboard.InputFieldState = RegularInputField
-	txtmsg := v.NewTextMessage(msg)
-	txtmsg.SetKeyboard(keyboard)
-	return v.SendMessage(receiver, txtmsg)
+	return v.SendMessage(receiver, v.NewTextMessage(msg))
 }
 
 // SendURLMessage to easily send url messages as global sender
